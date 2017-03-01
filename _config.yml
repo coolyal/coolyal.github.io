@@ -14,12 +14,12 @@ url: "https://coolyal.com" # the base hostname & protocol for your site
 permalink: /:year/:month/:day/:title/
 
 # other links
-#twitter_username: biezhii
+#twitter_username: coolyal
 #facebook_username: 
-#github_username:  biezhi
+github_username:  coolyal
 email: yalcwh@gmail.com
-#weibo_username: biezhii
-#zhihu_username: biezhi
+#weibo_username: coolyal
+#zhihu_username: coolyal
 #linkedIn_username: 
 #dribbble_username: 
 
