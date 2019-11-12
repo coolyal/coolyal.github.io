@@ -1,97 +1,64 @@
 ---
 layout: post
-title: 升级python2.6到2.7并安装pip
-categories: python
-tags: python pip
+title: MongoDB常用基础命令
+categories: nosql
+tags: nosql mongodb
 ---
 
 * content
 {:toc}
 
-CentOS系统默认的python版本是2.6，目前很多python的操作在2.7版本会有好的支持，那么这里手动进行升级。
-
-## 1. 升级Python
-
-使用 `wget` 下载python2.7
-
-```sh
-[root@localhost ~]# wget https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz
-[root@localhost ~]# tar -zxvf Python-2.7.10.tgz
-[root@localhost ~]# cd Python-2.7.10
-[root@localhost Python-2.7.10]# ./configure --enable-shared --with-zlib
+### 1、单条件查询
 ```
-
-之后执行
-
-```sh
-[root@localhost Python-2.7.10]# vi ./Modules/Setup
+db.logEntity.find({'logType':"interfaceLog"})
 ```
-
-
-
-找到 `#zlib zlibmodule.c -I$(prefix)/include -L$(exec_prefix)/lib -lz` 去掉注释保存，然后编译安装
-
-```sh
-[root@localhost Python-2.7.10]# make && make install
+### 2、多条件查询
 ```
-
-等待安装完成...
-
-安装好 `Python2.7` 之后我们需要先把  `Python2.6` 备份起来，然后再对yum的配置进行修改，如果不进行这一步操作的话，执行yum命令将会提示你Python的版本不对。
-
-执行以下命令，对 `Python2.6` 进行备份，然后为 `Python2.7` 创建软链接
-
-```sh
-[root@localhost ~]# mv /usr/bin/python /usr/bin/python2.6.6
-[root@localhost ~]# ln -s /usr/local/bin/python2.7 /usr/bin/python
+db.logEntity.find({'logType':"interfaceLog","createTime":{$gte:"2019-10-31",$lte:"2019-10-31"}})  
+.sort({"createTime":-1}).limit(10).skip(1)
+1 为指定按升序创建索引， -1为按降序创建索引。
 ```
-
-然后编辑 `/usr/bin/yum` ，将第一行的 `#!/usr/bin/python` 修改成 `#!/usr/bin/python2.6.6`
-现在执行yum命令已经不会出现之前的错误信息了。
-
-我们执行 `python -V` 查看版本信息，如果出现错误
-
-```sh
-[root@localhost ~]# python -V
-python: error while loading shared libraries: libpython2.7.so.1.0: cannot open shared object file: No such file or directory
+### 3、按条件删除
 ```
-
-编辑配置文件 `vi /etc/ld.so.conf`
-
-添加新的一行内容 `/usr/local/lib`，保存退出，然后
-
-```sh
-/sbin/ldconfig
-/sbin/ldconfig -v
+db.logEntity.remove({'logType':"interfaceLog"}})
 ```
-
-再次执行 `python -V` 显示为
-
-```sh
-[root@localhost ~]# python -V
-Python 2.7.10
+### 4、创建索引
 ```
-
-## 2. 安装pip
-
-下载最新版的pip，然后安装
-
-```sh
-[root@localhost ~]# wget https://bootstrap.pypa.io/get-pip.py
-python get-pip.py
+db.logEntity.createIndex({createTime:-1})
+1 为指定按升序创建索引， -1为按降序创建索引。
 ```
-
-查找pip的位置
-
-```sh
-whereis pip
+### 5、按条件统计数据
 ```
-
-找到 `pip2.7` 的路径，为其创建软链作为系统默认的启动版本
-
-```sh
-ln -s /usr/local/bin/pip2.7 /usr/bin/pip
+db.logEntity.count({logType:'userlog',createTime: {$gte:'2019-11-1',$lte:'2019-11-11'}})
 ```
-
-pip安装完毕，现在可以用它下载安装各种包了 :)
+### 6、按条件统计去重后的数据
+```
+db.logEntity.distinct('userName',{logType:'userlog',createTime: {$gte:'2019-11-1',$lte:'2019-11-11'}}).length
+```
+### 7、分组统计group
+```
+db.logEntity.aggregate([
+    {$match:{logType:'userlog',createTime: {$gte:'2019-11-1',$lte:'2019-11-11'}}},
+    {$group:{
+        _id: '$userName',
+        acc:{$sum: 1}
+    }},
+    {$sort: {acc: -1}},
+    {$limit:100},
+    {$skip:0}
+])
+```
+### 8、模糊查询
+查询 title 包含"教"字的文档：
+```
+db.col.find({title:/教/})
+```
+查询 title 字段以"教"字开头的文档：
+```
+db.col.find({title:/^教/})
+```
+查询 titl e字段以"教"字结尾的文档：
+```
+db.col.find({title:/教$/})
+```
 
