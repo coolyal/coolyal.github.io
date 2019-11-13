@@ -189,5 +189,3 @@ if(annotation instanceof MyAnnotation){
  System.out.println("value: " + myAnnotation.value());
 }
 ```
-
-原创文章，转载请注明： [转载自并发编程网](http://ifeve.com/)
