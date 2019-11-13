@@ -92,7 +92,7 @@ systemctl enable cups.service
 | systemctl list-units –type=service –all grep cpu | 列出 cpu电源管理机制的服务 |
 | systemctl list-units –type=target –all | 列出所有target |
 
-### 3、systemctl特殊的用法
+## 3、systemctl特殊的用法
 
 | systemctl命令 | 说明 |
 | ------------- | ------------- |
@@ -123,7 +123,7 @@ systemctl status cups.service
 systemctl unmask cups.service
 ```
 
-### 4、init 命令与systemctl命令对比
+## 4、init 命令与systemctl命令对比
 
 | init命令 | systemctl命令 | 说明 |
 | ------------- | ------------- |  ------------- |
@@ -139,9 +139,9 @@ systemctl unmask cups.service
 | systemctl rescue | 强制进入救援模式 |
 | systemctl emergency | 强制进入紧急救援模式 |
 
-### 5、设置系统运行级别
+## 5、设置系统运行级别
 
-#### 5.1、运行级别对应表
+### 5.1、运行级别对应表
 
  | init级别 | systemctl target |
 | ------------- | ------------- |
@@ -155,7 +155,7 @@ systemctl unmask cups.service
 
 此外还是一个getty.target用来设置tty的数量。
 
-#### 5.2、设置运行级别
+### 5.2、设置运行级别
 
 命令格式：
 
@@ -181,7 +181,7 @@ command:
 | systemctl isolate multi-user.target | 在不重启的情况下，切换到运行级别mulit-user下 |
 | systemctl isolate graphical.target | 在不重启的情况下，切换到图形界面下 |
 
-### 6、使用systemctl分析各服务之前的依赖关系
+## 6、使用systemctl分析各服务之前的依赖关系
 
 命令格式：
 
@@ -228,7 +228,7 @@ default.target
 └─graphical.target
 ```
 
-### 7、关闭网络服务
+## 7、关闭网络服务
 
 在使用systemctl关闭网络服务时有一些特殊 
 需要同时关闭unit.servce和unit.socket
@@ -262,7 +262,7 @@ yum -y install net-tools
 netstat -lnp |grep sshd
 ```
 
-### 8、关闭防火墙firewall
+## 8、关闭防火墙firewall
 
 Centos 7.x 中取消了iptables, 用firewall取而代之。要关闭防火墙并禁止开机启动服务使用下面的命令:
 
